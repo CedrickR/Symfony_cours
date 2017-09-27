@@ -6,11 +6,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Entity\User;
+use AppBundle\Form\UserType;    
 
-// Pour la création des formulaires
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+
 
 class DefaultController extends Controller
 {
@@ -53,35 +51,42 @@ class DefaultController extends Controller
     public function ajouterAction(Request $request)
     {
 
-            
+        
         $user = new User();
-        $form = $this->createFormBuilder($user)
-            ->add('nom', TextType::class)
-            ->add('prenom', TextType::class)
-            ->add('age', TextType::class)
-            ->add('save', SubmitType::class, array('label' => 'Créer un utilisateur'))
-            ->getForm();
+        $form = $this->createForm(UserType::class, $user);
+    
+        // $form->handleRequest($request);
+        
+        //     if ($form->isSubmitted() && $form->isValid()) {
+        //          // $file stores the uploaded PDF file
+        //         /** @var Symfony\Component\HttpFoundation\File\UploadedFile $file */
+        //         // echo "<pre>";
+        //         // print_r($user);
+        //         // die();
+                
+        //        $user = $this->getAvatarimg();
 
-
-        $form->handleRequest($request);
-        
-            if ($form->isSubmitted() && $form->isValid()) {
-                // $form->getData() holds the submitted values
-                // but, the original `$task` variable has also been updated
-                $user = $form->getData();
-        
-                // ... perform some action, such as saving the task to the database
-                // for example, if Task is a Doctrine entity, save it!
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($user);
-                $em->flush();
-        
-                return $this->redirectToRoute('homepage');
-            }
+        //         // Generate a unique name for the file before saving it
+        //         $fileName = md5(uniqid()).'.'.$user->guessExtension();
+            
+        //         //Move the file to the directory where brochures are stored
+        //         $user->move($this->getParameter('uploads_directory'), $fileName);
+            
+        //         // Update the 'brochure' property to store the PDF file name
+        //         // instead of its contents
+        //         $user->setAvatarimg($fileName);
+            
+        //         $em = $this->getDoctrine()->getManager();
+        //         $em->persist($user);
+        //         $em->flush();
+            
+        //         return $this->redirectToRoute('homepage');
+        //     }
             
 
         return $this->render('default/ajouter.html.twig', array('form' => $form->createView()
         ));
+        
     }
 
 
@@ -149,14 +154,13 @@ class DefaultController extends Controller
         $repository = $this->getDoctrine()->getRepository("AppBundle:User");
         $user = $repository->find($id);
         
-        $form = $this->createFormBuilder($user)
-            ->add('nom', TextType::class)
-            ->add('prenom', TextType::class)
-            ->add('age', TextType::class)
-            ->add('save', SubmitType::class, array('label' => "Modifier l'utilisateur"))
-            ->getForm();
-
-
+        // $form = $this->createFormBuilder($user)
+        //     ->add('nom', TextType::class)
+        //     ->add('prenom', TextType::class)
+        //     ->add('age', TextType::class)
+        //     ->add('save', SubmitType::class, array('label' => "Modifier l'utilisateur"))
+        //     ->getForm();
+      $form = $this->createForm(UserType::class, $user);
       $form->handleRequest($request);
         
             if ($form->isSubmitted() && $form->isValid()) {
@@ -177,5 +181,60 @@ class DefaultController extends Controller
             ));
      }
 
+     /**
+     * @Route("/upload", name="upload_file")
+     *
+     */
+     public function uploadAction(Request $request)
+     {
+        
+       $user = null; 
+      $form = $this->createForm(UploadType::class, $user);
+      $form->handleRequest($request);
+      
+              if ($form->isSubmitted() && $form->isValid()) {
+                  // $file stores the uploaded PDF file
+                  /** @var Symfony\Component\HttpFoundation\File\UploadedFile $file */
+                  //$file = $product->getBrochure();
+      
+                  // Generate a unique name for the file before saving it
+                //   $fileName = md5(uniqid()).''.$file->guessExtension();
+                  $fileName = md5(uniqid()).'.BIN';
+      
+                  // Move the file to the directory where brochures are stored
+                  $file->move(
+                      $this->getParameter('uploads_directory'),
+                      $fileName
+                  );
+      
+                  // Update the 'brochure' property to store the PDF file name
+                  // instead of its contents
+                 // $product->setBrochure($fileName);
+      
+                  // ... persist the $product variable or any other work
+      
+                  return $this->redirectToRoute('homepage');
+              }
+      
+              return $this->render('default/upload.html.twig', array(
+                  'form' => $form->createView(),
+              ));
+   
 
+     }
+
+
+    /**
+     * @Route("/generatePdf", name="generatePdf")
+     *
+     */
+     public function generatePdfAction(Request $request)
+     {
+        $this->get('knp_snappy.pdf')->generate('http://www.google.fr', 'uploads/file.pdf');
+
+            
+            return $this->render('default/info.html.twig', array(
+                'message' => 'message' ,
+     ));
+     }
 }

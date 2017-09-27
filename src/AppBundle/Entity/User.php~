@@ -134,28 +134,4 @@ class User
     {
         return $this->age;
     }
-
-
-    /**
-     * Get avatarimg
-     *
-     * @return string 
-     */
-    public function getAvatarimg()
-    {
-        $this->avatarimg;
-    }
-
-    /**
-     * Set avatarimg
-     *
-     * @param string $avatarimg
-     * @return User
-     */
-    public function setAvatarimg($avatarimg)
-    {
-        $this->avatarimg = $avatarimg;
-
-        return $this;
-    }
 }
