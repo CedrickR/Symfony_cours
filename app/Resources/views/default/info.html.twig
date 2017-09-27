@@ -3,39 +3,9 @@
 {% block body %}
     <div id="wrapper">
         <div id="container">
-        {#
-        {{ dump(utilisateurs) }}
-        #}
             <div id="welcome">
-                <h1><span>Liste des utilisateurs</span></h1>
+                {{ message }}
             </div>
-
-
-            <table class="table table-striped"> 
-                <thead> 
-                    <tr>
-                        <th>#</th> 
-                        <th>Nom</th> 
-                        <th>Prenom</th> 
-                        <th>Age</th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for user in utilisateurs %}
-                    <tr> 
-                    <th> <a href="{{ path('detail', {'id':  user.id } ) }}">{{ user.id }}</a></th> 
-                    <td>{{ user.nom }}</td> 
-                    <td>{{ user.prenom }}</td> 
-                    <td>{{ user.age }}</td>
-                    <td><a href="{{ path('modifier', {'id':  user.id } ) }}">modifier</a></td>
-                    <td><a href="{{ path('supprimer', {'id':  user.id } ) }}">Supprimer</a></td>
-                    </tr>
-                {% endfor %}
-                </tbody> 
-            </table>
-        
 
 
 
